@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drag and Drop Example</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div id="container1">
+      <div class="item" draggable="true">
+        <img src="./assets/item1.jpg" alt="Item 1">
+      </div>
+      <div class="item" draggable="true">
+        <img src="./assets/item2.jpg" alt="Item 2">
+      </div>
+      <div class="item" draggable="true">
+        <img src="./assets/item3.jpg" alt="Item 3">
+      </div>
+      <div class="item" draggable="true">
+        <img src="./assets/item4.jpg" alt="Item 4">
+      </div>
+    </div>
+    <div id="container2"></div>
+  </div>
+
+  <div class="success-message" id="successMessage">Item dropped successfully!</div>
+  <button class="reset-button" onclick="reset()">Reset</button>
+
+  <script>
+    var draggedItem = null;
+
+    document.addEventListener("dragstart", function(event) {
+      draggedItem = event.target;
+      event.dataTransfer.setData("text/plain", event.target.outerHTML);
+    });
+
+    document.getElementById("container2").addEventListener("dragover", function(event) {
+      event.preventDefault();
+      this.style.borderColor = "blue";
+    });
+
+    document.getElementById("container2").addEventListener("dragleave", function(event) {
+      this.style.borderColor = "#ccc";
+    });
+
+    document.getElementById("container2").addEventListener("drop", function(event) {
+      event.preventDefault();
+      this.style.borderColor = "#ccc";
+      var data = event.dataTransfer.getData("text/plain");
+      var newItem = document.createElement("div");
+      newItem.innerHTML = data;
+      newItem.classList.add("item");
+      this.appendChild(newItem);
+      showSuccessMessage();
+    });
+
+    function showSuccessMessage() {
+      var successMessage = document.getElementById("successMessage");
+      successMessage.style.display = "block";
+      setTimeout(function() {
+        successMessage.style.display = "none";
+      }, 2000);
+    }
+
+    function reset() {
+      var container1 = document.getElementById("container1");
+      var container2 = document.getElementById("container2");
+      while (container1.firstChild) {
+        container1.firstChild.remove();
+      }
+      while (container2.firstChild) {
+        container2.firstChild.remove();
+      }
+      var items = [
+        '<img src="./assets/item1.jpg" alt="Item 1">',
+        '<img src="./assets/item2.jpg" alt="Item 2">',
+        '<img src="./assets/item3.jpg" alt="Item 3">',
+        '<img src="./assets/item4.jpg" alt="Item 4">'
+      ];
+      items.forEach(function(item) {
+        var newItem = document.createElement("div");
+        newItem.innerHTML = item;
+        newItem.classList.add("item");
+        container1.appendChild(newItem);
+      });
+    }
+  </script>
+</body>
+</html>
